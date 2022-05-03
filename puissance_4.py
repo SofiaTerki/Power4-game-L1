@@ -47,7 +47,6 @@ def configuration_initiale():
             configuration.append([0 for j in range(NOMBRE_COLONNE)])
     return configuration
 
-
 def affichage_jeuton():
     """
     Fonction qui associe à chaque valeur de la configuration le jeuton de couleur corespondante
@@ -58,14 +57,13 @@ def affichage_jeuton():
     for i in range(NOMBRE_LIGNE):
         for j in range(NOMBRE_COLONNE):
             if configuration[i][j] == 0:
-                color = "white"
+                color = "black"
             elif configuration[i][j] == 1:
                 color = "red"
             elif configuration[i][j] == 2:
                 color = "yellow"
             jeuton.append(canvas.create_oval(j*(DIAMETRE_JETON)+10, i*(DIAMETRE_JETON)+10,
              (j+1)*(DIAMETRE_JETON)-10, (i+1)*(DIAMETRE_JETON)-10,fill = color, outline = color))
-
             
 def mouvement_jeton(event):
     """
@@ -75,7 +73,6 @@ def mouvement_jeton(event):
     global joueur, configuration, column, historique
     config = copy.deepcopy(configuration)
     historique.append(config)
-    print(historique)
     x = event.x
     ligne = -1
     column =[0, 1, 2, 3, 4, 5, 6]
@@ -146,7 +143,7 @@ def colonne_bloquee(): #la fonction ne marche pas
         for j in range(NOMBRE_LIGNE):
             if configuration[i][j] !=0:
                 del column[j]
-    
+
 def sauvegarde():
     """
     Fonction qui enregistre la configuration actuel dans un fichier
@@ -203,64 +200,50 @@ def charger():
     
     affichage_jeuton()
 
-
-
-
 def demarrer():
     configuration_initiale()
     affichage_jeuton()
-
 
 def retour():
     global configuration, historique
     configuration = historique[-1]
     del(historique[-1])
-    print(configuration)
     affichage_jeuton()
-
-
-
 
 ########## Affichage graphique
 
 racine = tk.Tk()
-canvas = tk.Canvas(racine, width=DIAMETRE_JETON*NOMBRE_COLONNE, height=DIAMETRE_JETON*NOMBRE_LIGNE, bg="blue")
+racine.config(bg="grey1")
+canvas = tk.Canvas(racine, width=DIAMETRE_JETON*NOMBRE_COLONNE, height=DIAMETRE_JETON*NOMBRE_LIGNE, bg="indigo")
 
 ### Création des wigdests
 
 # Wijet de sauvegarde
-frame_sauvegarde = tk.LabelFrame(racine,text="nommez votre fichier à sauvegarder")
-entré_nom_fichier_sauvegarde = tk.Entry(frame_sauvegarde)
-bouton_sauvegarder = tk.Button(frame_sauvegarde, text="sauvegarde", command=lambda : sauvegarde())
-
+frame_sauvegarde = tk.LabelFrame(racine,text="nommez votre fichier à sauvegarder", bd=0, fg="grey", bg="grey1")
+entré_nom_fichier_sauvegarde = tk.Entry(frame_sauvegarde, fg="white", bg="grey1")
+bouton_sauvegarder = tk.Button(frame_sauvegarde, text="sauvegarde", bg="grey1", fg="orange", command=lambda : sauvegarde())
 # Widjet de chargement
-frame_charge = tk.LabelFrame(racine,text="Choisisser une sauvegarde")
-list_fichier_charge = tk.Listbox(frame_charge, bd=0, activestyle='none')
+frame_charge = tk.LabelFrame(racine,text="Choisisser une sauvegarde", bd=0, fg="grey", bg="grey1")
+list_fichier_charge = tk.Listbox(frame_charge, bd=0, activestyle='none', fg="white", bg="grey1")
 for i in list_sauvegarde:
     list_fichier_charge.insert('end', i)
-bouton_charger = tk.Button(frame_charge, text="charge", command=lambda : charger())
-
+bouton_charger = tk.Button(frame_charge, text="charge", bg="grey1", fg="orange", command=lambda : charger())
 # widjet d'annulation
-bouton_retour = tk.Button(racine, text="annuler", command = lambda : retour())
-
-bouton_demarrer = tk.Button(racine, text = "démarrer", command = demarrer)
+bouton_retour = tk.Button(racine, text="annuler", bg="grey1", fg="orange", command = lambda : retour())
+bouton_demarrer = tk.Button(racine, text = "démarrer", bg="grey1", fg="orange", command = demarrer)
 
 ### Placement des widgets
-canvas.grid(column=0,row=0, rowspan=2)
-
+canvas.grid(column=0,row=0, rowspan=4)
 # Widjets de sauvegarde
 frame_sauvegarde.grid(column=1, row=0)
-entré_nom_fichier_sauvegarde.grid()
-bouton_sauvegarder.grid()
-
+entré_nom_fichier_sauvegarde.grid(column=0, row=0)
+bouton_sauvegarder.grid(column=1, row=0)
 # widjets de chargement
 frame_charge.grid(column=1, row=1)
-list_fichier_charge.grid(column=1,row=2)
+list_fichier_charge.grid(column=1,row=0)
 bouton_charger.grid(column=1, row=1)
-
 # widjet d'annulation
 bouton_retour.grid(column=1, row=3)
-
 bouton_demarrer.grid(column=1, row = 2)
 
 #liaison d'événements 
