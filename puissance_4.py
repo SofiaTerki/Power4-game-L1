@@ -8,6 +8,7 @@
 
 # Librairies
 import tkinter as tk
+import random
 
 # Constantes
 NOMBRE_LIGNE = 6
@@ -93,24 +94,38 @@ def determination_du_gagnant():
     for j in range(NOMBRE_COLONNE):
         for i in range (NOMBRE_LIGNE):
             if configuration[-i][j]==1 and configuration[-i+1][j] == 1 and configuration[-i+2][j]==1 and configuration[-i+3][j]== 1:
-                print("Joueur 1 is the WINNER!")
+                #print("Joueur 1 is the WINNER!")
+                label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
+                label.grid(column = 0, row = 2)
                 winner = True
             if configuration[-i][j]==2 and configuration[-i+1][j]==2 and configuration[-i+2][j]==2 and configuration[-i+3][j]== 2:
-                print("Joueur 2 is the WINNER!")
+                label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
+                label.grid(column = 0, row = 2)
                 winner = True
+
     #vérifie si 4 jetons sont alignés dans une ligne
     for i in range(NOMBRE_LIGNE):
         for j in range (NOMBRE_COLONNE):
             if configuration[i][-j]==1 and configuration[i][-j+1]==1 and configuration[i][-j+1]==1 and configuration[i][-j+3]== 1:
-                print("Joueur 1 is the WINNER!")
+                label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
+                label.grid(column = 0, row = 2)
                 winner = True
             if configuration[i][-j]==2 and configuration[i][-j+1]==2 and configuration[i][-j+2]==2 and configuration[i][-j+3]== 2:
-                print("Joueur 2 is the WINNER!")
+                label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
+                label.grid(column = 0, row = 2)
                 winner = True
+
     #match nul
-    if 0 not in configuration and winner == False:
-        print("Manche nulle")
-    #bloquer la colonne qui est déjà pleine
+    if (0 not in configuration) and (winner == False):
+        label = tk.Label(racine, text = "Manche nulle!", font = "helvetica, 30")
+        label.grid(column = 0, row = 2) ###y a un problème à chaque clique ça affiche manche nulle????
+
+def colonne_bloquee(): #la fonction ne marche pas
+    global column
+    for i in range (NOMBRE_COLONNE):
+        for j in range(NOMBRE_LIGNE):
+            if configuration[i][j] !=0:
+                del column[j]
     
 
 def sauvegarde():
@@ -148,6 +163,9 @@ def demarrer():
     configuration_initiale()
     affichage_jeuton()
 
+
+
+##############################################################################################################
 # Affichage graphique
 
 racine = tk.Tk()
@@ -163,7 +181,7 @@ canvas.grid(column=0,row=0, rowspan=2)
 bouton_sauvegarder.grid(column=1, row=0)
 bouton_charger.grid(column=1, row=1)
 bouton_demarrer.grid(column=1, row = 2)
-canvas.grid()
+
 
 #liaison d'événements 
 canvas.bind('<Button>', mouvement_jeton )
