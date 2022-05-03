@@ -4,24 +4,35 @@
 # Sofia TERKI
 # Erwan MAIRE
 # Adam JACCOU
+# https://github.com/uvsq22005047/Projet_puissance_4.git
 #########################################################
 
-# Librairies
+########## Librairies
 import tkinter as tk
 import random
 
-# Constantes
+########## Constantes
 NOMBRE_LIGNE = 6
 NOMBRE_COLONNE = 7
 DIAMETRE_JETON = 100
 start = True
 
-# Variables globals
+########## Variables globals
 configuration = []
 jeuton = []
 joueur = 1
+list_sauvegarde = []
 
-# Fonctions
+# création d'un fichier déstiné à contenir le nom des fichier sauvegarder si ce premier n'existe pas
+fichier_list_sauvegarde = open("list_nom_sauvegarde.txt","a")
+fichier_list_sauvegarde.close
+
+fichier_list_sauvegarde = open("list_nom_sauvegarde.txt","r")
+for ligne in fichier_list_sauvegarde:
+    list_sauvegarde.append(ligne)
+fichier_list_sauvegarde.close
+
+########## Fonctions
 
 def configuration_initiale():
     """
@@ -38,6 +49,7 @@ def configuration_initiale():
 def affichage_jeuton():
     """
     Fonction qui associe à chaque valeur de la configuration le jeuton de couleur corespondante
+     et l'affiche dans la grille
     """
     canvas.delete('all')
     del jeuton[:]
@@ -54,8 +66,10 @@ def affichage_jeuton():
 
             
 def mouvement_jeton(event):
-    """Fonction qui permet de faire tomber le jeton dans la
-    grille jusqu'à toucher le fond ou un autre jeton"""
+    """
+    Fonction qui permet de faire tomber le jeton dans la
+    grille jusqu'à toucher le fond ou un autre jeton
+    """
     global joueur, configuration, column
     x = event.x
     ligne = -1
@@ -127,37 +141,64 @@ def colonne_bloquee(): #la fonction ne marche pas
             if configuration[i][j] !=0:
                 del column[j]
     
-
 def sauvegarde():
-    nom_fichier = input("Nom du fichier à sauvegarder")
+    """
+    Fonction qui enregistre la configuration actuel dans un fichier
+     et le nom de ce fichier dans list_nom_sauvegarde.txt
+    """
+    global list_sauvegarde
+
+    nom_fichier = entré_nom_fichier_sauvegarde.get()
+    
+    list_sauvegarde.append(nom_fichier)
+
+    # Ajout du nom du fichier à la liste des fichier sauvegarder dans le fichier "list_nom_sauvegarde.txt"
+    fichier_list_sauvegarde = open("list_nom_sauvegarde.txt","a")
+    fichier_list_sauvegarde.write(nom_fichier+"\n")
+    fichier_list_sauvegarde.close
+    
+    # Création du fichier contenant la configuration à sauvegarder
     fichier_sauvegarde = open(nom_fichier+".txt","w")
     for i in configuration:
         for j in i:
             fichier_sauvegarde.write(str(j))
         fichier_sauvegarde.write("\n")
     fichier_sauvegarde.close
+    
+    # Ajout du fichier à la liste de chargement
+    list_fichier_charge.insert('end', nom_fichier)
 
 def charger():
+    """
+    Fonction de chargement des configuration enregistrer
+    """
     global configuration
-    nom_fichier = input("Nom du fichier à charger")
-    fichier_charger = open(nom_fichier+".txt","r")
+    
+    nom_fichier = list_fichier_charge.get(list_fichier_charge.curselection())
+    nom_fichier = list(nom_fichier)
+    del(nom_fichier[-1])
+    nom_fichier = "".join(nom_fichier)
+    
     config = []
+
+    fichier_charger = open(nom_fichier+".txt","r")
     for ligne in fichier_charger:
         config.append(list(ligne))
-    print(config)
-    print(type(config))
-    print(type(config[2][3]))
+    # Supression du saut à la ligne
     for i in config:
         del(i[-1])
+    # Convertion des élémentde la liste en entier
     for i in range(NOMBRE_LIGNE):
         for j in range(NOMBRE_COLONNE):
-            config[i][j]=int(config[i][j])
-    print(config)
-    print(type(config))
-    print(type(config[2][3]))    
+            config[i][j]=int(config[i][j])   
     fichier_charger.close
+
     configuration = config
+    
     affichage_jeuton()
+
+
+
 
 def demarrer():
     configuration_initiale()
@@ -165,30 +206,50 @@ def demarrer():
 
 
 
-##############################################################################################################
-# Affichage graphique
+
+########## Affichage graphique
 
 racine = tk.Tk()
 canvas = tk.Canvas(racine, width=DIAMETRE_JETON*NOMBRE_COLONNE, height=DIAMETRE_JETON*NOMBRE_LIGNE, bg="blue")
 
-#création des wigdests
-bouton_sauvegarder = tk.Button(racine, text="sauvegarde", command=lambda : sauvegarde())
-bouton_charger = tk.Button(racine, text="charge", command=lambda : charger())
+### Création des wigdests
+
+# Wijet de sauvegarde
+frame_sauvegarde = tk.LabelFrame(racine,text="nommez votre fichier à sauvegarder")
+entré_nom_fichier_sauvegarde = tk.Entry(frame_sauvegarde)
+bouton_sauvegarder = tk.Button(frame_sauvegarde, text="sauvegarde", command=lambda : sauvegarde())
+
+# Widjet de chargement
+frame_charge = tk.LabelFrame(racine,text="Choisisser une sauvegarde")
+list_fichier_charge = tk.Listbox(frame_charge, bd=0, activestyle='none')
+for i in list_sauvegarde:
+    list_fichier_charge.insert('end', i)
+bouton_charger = tk.Button(frame_charge, text="charge", command=lambda : charger())
+
+
 bouton_demarrer = tk.Button(racine, text = "démarrer", command = demarrer)
 
-# Placement des widgets
+### Placement des widgets
 canvas.grid(column=0,row=0, rowspan=2)
-bouton_sauvegarder.grid(column=1, row=0)
-bouton_charger.grid(column=1, row=1)
-bouton_demarrer.grid(column=1, row = 2)
 
+# Widjets de sauvegarde
+frame_sauvegarde.grid(column=1, row=0)
+entré_nom_fichier_sauvegarde.grid()
+bouton_sauvegarder.grid()
+
+# widjets de chargement
+frame_charge.grid(column=1, row=1)
+list_fichier_charge.grid(column=1,row=2)
+bouton_charger.grid(column=1, row=1)
+
+bouton_demarrer.grid(column=1, row = 2)
 
 #liaison d'événements 
 canvas.bind('<Button>', mouvement_jeton )
 
 # fonctions appliquées avant le démarrage de la fenêtre graphique
-#configuration_initiale()
-#affichage_jeuton()
+configuration_initiale()
+affichage_jeuton()
 
 # Lancement de l'interface graphique
 racine.mainloop()
