@@ -10,6 +10,7 @@
 ########## Librairies
 import tkinter as tk
 import random
+import copy
 
 ########## Constantes
 NOMBRE_LIGNE = 6
@@ -22,6 +23,7 @@ configuration = []
 jeuton = []
 joueur = 1
 list_sauvegarde = []
+historique = []
 
 # création d'un fichier déstiné à contenir le nom des fichier sauvegarder si ce premier n'existe pas
 fichier_list_sauvegarde = open("list_nom_sauvegarde.txt","a")
@@ -70,7 +72,10 @@ def mouvement_jeton(event):
     Fonction qui permet de faire tomber le jeton dans la
     grille jusqu'à toucher le fond ou un autre jeton
     """
-    global joueur, configuration, column
+    global joueur, configuration, column, historique
+    config = copy.deepcopy(configuration)
+    historique.append(config)
+    print(historique)
     x = event.x
     ligne = -1
     column =[0, 1, 2, 3, 4, 5, 6]
@@ -98,6 +103,7 @@ def mouvement_jeton(event):
     elif joueur == 2:
         configuration[ligne][colonne] = 2
         joueur = 1
+    
     affichage_jeuton()
     determination_du_gagnant()
     
@@ -205,6 +211,14 @@ def demarrer():
     affichage_jeuton()
 
 
+def retour():
+    global configuration, historique
+    configuration = historique[-1]
+    del(historique[-1])
+    print(configuration)
+    affichage_jeuton()
+
+
 
 
 ########## Affichage graphique
@@ -226,6 +240,8 @@ for i in list_sauvegarde:
     list_fichier_charge.insert('end', i)
 bouton_charger = tk.Button(frame_charge, text="charge", command=lambda : charger())
 
+# widjet d'annulation
+bouton_retour = tk.Button(racine, text="annuler", command = lambda : retour())
 
 bouton_demarrer = tk.Button(racine, text = "démarrer", command = demarrer)
 
@@ -241,6 +257,9 @@ bouton_sauvegarder.grid()
 frame_charge.grid(column=1, row=1)
 list_fichier_charge.grid(column=1,row=2)
 bouton_charger.grid(column=1, row=1)
+
+# widjet d'annulation
+bouton_retour.grid(column=1, row=3)
 
 bouton_demarrer.grid(column=1, row = 2)
 
