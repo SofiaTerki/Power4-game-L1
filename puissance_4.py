@@ -83,7 +83,33 @@ def mouvement_jeton(event):
         configuration[ligne][colonne] = 2
         joueur = 1
     affichage_jeuton()
+    determination_du_gagnant()
     
+def determination_du_gagnant():
+    """Fonction qui détermine le gagnant en vérifiant si 4 jetons sont alignés"""
+    winner = False #variable qui permet de voir s'il y a un gagant
+    #vérifie si 4 jetons sont alignés dans une colonne
+    for j in range(NOMBRE_COLONNE):
+        for i in range (NOMBRE_LIGNE):
+            if configuration[-i][j]==1 and configuration[-i+1][j] == 1 and configuration[-i+2][j]==1 and configuration[-i+3][j]== 1:
+                print("Joueur 1 is the WINNER!")
+                winner = True
+            if configuration[-i][j]==2 and configuration[-i+1][j]==2 and configuration[-i+2][j]==2 and configuration[-i+3][j]== 2:
+                print("Joueur 2 is the WINNER!")
+                winner = True
+    #vérifie si 4 jetons sont alignés dans une ligne
+    for i in range(NOMBRE_LIGNE):
+        for j in range (NOMBRE_COLONNE):
+            if configuration[i][-j]==1 and configuration[i][-j+1]==1 and configuration[i][-j+1]==1 and configuration[i][-j+3]== 1:
+                print("Joueur 1 is the WINNER!")
+                winner = True
+            if configuration[i][-j]==2 and configuration[i][-j+1]==2 and configuration[i][-j+2]==2 and configuration[i][-j+3]== 2:
+                print("Joueur 2 is the WINNER!")
+                winner = True
+    #match nul
+    if 0 not in configuration and winner == False:
+        print("Manche nulle")
+
     
 # Affichage graphique
 
@@ -95,5 +121,6 @@ canvas.grid()
 canvas.bind('<Button>', mouvement_jeton )
 configuration_initiale()
 affichage_jeuton()
+
 
 racine.mainloop()
