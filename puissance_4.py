@@ -110,12 +110,12 @@ def determination_du_gagnant():
     #vérifie si 4 jetons sont alignés dans une colonne
     for j in range(NOMBRE_COLONNE):
         for i in range (NOMBRE_LIGNE):
-            if configuration[-i][j]==1 and configuration[-i+1][j] == 1 and configuration[-i+2][j]==1 and configuration[-i+3][j]== 1:
+            if configuration[-i][j]==1 and configuration[-(i+1)][j] == 1 and configuration[-(i+2)][j]==1 and configuration[-(i+3)][j]== 1:
                 #print("Joueur 1 is the WINNER!")
                 label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
                 label.grid(column = 0, row = 2)
                 winner = True
-            if configuration[-i][j]==2 and configuration[-i+1][j]==2 and configuration[-i+2][j]==2 and configuration[-i+3][j]== 2:
+            if configuration[-i][j]==2 and configuration[-(i+1)][j]==2 and configuration[-(i+2)][j]==2 and configuration[-(i+3)][j]== 2:
                 label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
                 label.grid(column = 0, row = 2)
                 winner = True
@@ -123,11 +123,11 @@ def determination_du_gagnant():
     #vérifie si 4 jetons sont alignés dans une ligne
     for i in range(NOMBRE_LIGNE):
         for j in range (NOMBRE_COLONNE):
-            if configuration[i][-j]==1 and configuration[i][-j+1]==1 and configuration[i][-j+1]==1 and configuration[i][-j+3]== 1:
+            if configuration[i][-j]==1 and configuration[i][-(j+1)]==1 and configuration[i][-(j+1)]==1 and configuration[i][-(j+3)]== 1:
                 label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
                 label.grid(column = 0, row = 2)
                 winner = True
-            if configuration[i][-j]==2 and configuration[i][-j+1]==2 and configuration[i][-j+2]==2 and configuration[i][-j+3]== 2:
+            if configuration[i][-j]==2 and configuration[i][-(j+1)]==2 and configuration[i][-(j+2)]==2 and configuration[i][-(j+3)]== 2:
                 label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
                 label.grid(column = 0, row = 2)
                 winner = True
