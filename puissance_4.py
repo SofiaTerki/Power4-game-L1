@@ -10,19 +10,22 @@
 ########## Librairies
 import tkinter as tk
 import copy
+import random
 
 ########## Constantes
 NOMBRE_LIGNE = 6
 NOMBRE_COLONNE = 7
-DIAMETRE_JETON = 100
+DIAMETRE_JETON = 70
 start = True
 
 ########## Variables globals
 configuration = []
 jeuton = []
-joueur = 1
+joueur = None
 list_sauvegarde = []
 historique = []
+compteur = 0
+
 
 # création d'un fichier déstiné à contenir le nom des fichier sauvegarder si ce premier n'existe pas
 fichier_list_sauvegarde = open("list_nom_sauvegarde.txt","a")
@@ -35,24 +38,46 @@ fichier_list_sauvegarde.close
 
 ########## Fonctions
 
+def demarrer():
+    """
+    Fonction qui initialise tous les parametre éssenciel pour le début d'une nouvelle partie.
+    """
+    global joueur
+
+    # détermination du joueur qui commence en premier
+    joueur = random.randint(1,2)
+    
+    # Création d'une grille vide
+    configuration_initiale()
+    
+    # Affichage de la grille
+    affichage_jeuton()
+
+
 def configuration_initiale():
     """
-    Création d'une grille vide
+    Fonction qui créé une grille vide.
     """
     global configuration
+
     if configuration != []:
         configuration = []
     for i in range(NOMBRE_LIGNE):
             configuration.append([0 for j in range(NOMBRE_COLONNE)])
     return configuration
 
+
 def affichage_jeuton():
     """
-    Fonction qui associe à chaque valeur de la configuration le jeuton de couleur corespondante
-     et l'affiche dans la grille
+    Fonction qui associe à chaque valeur de la configuration l'absence ou la présence
+     d'un jeuton de couleur corespondante et l'affiche dans la grille.
     """
+
+    # Supression de l'affichage de la grille
     canvas.delete('all')
     del jeuton[:]
+    
+    # Création d'un nouvel affichage de la grille
     for i in range(NOMBRE_LIGNE):
         for j in range(NOMBRE_COLONNE):
             if configuration[i][j] == 0:
@@ -63,36 +88,40 @@ def affichage_jeuton():
                 color = "yellow"
             jeuton.append(canvas.create_oval(j*(DIAMETRE_JETON)+10, i*(DIAMETRE_JETON)+10,
              (j+1)*(DIAMETRE_JETON)-10, (i+1)*(DIAMETRE_JETON)-10,fill = color, outline = color))
-            
+
+
 def mouvement_jeton(event):
     """
     Fonction qui permet de faire tomber le jeton dans la
-    grille jusqu'à toucher le fond ou un autre jeton
+    grille jusqu'à toucher le fond ou un autre jeton.
     """
-    global joueur, configuration, column, historique
-    config = copy.deepcopy(configuration)
-    historique.append(config)
+    global joueur, configuration, historique, compteur
+    
+    # Sauvegarde de de la configration afin de faire un retour vers elle si besoin
+    historique.append(copy.deepcopy(configuration))
+    
+    # Détermination de la colonne sur laquelle le joueur a cliqué
     x = event.x
     ligne = -1
-    column =[0, 1, 2, 3, 4, 5, 6]
-    #Détermination de la colonne sur laquelle le joueur a cliqué
-    if x<100:
-        colonne = column[0]
-    if 100<x<200:
-        colonne = column[1]
-    if 200<x<300:
-        colonne = column[2]
-    if 300<x<400:
-        colonne = column[3]
-    if 400<x<500:
-        colonne = column[4]
-    if 500<x<600:
-        colonne = column[5]
-    if 600<x<700:
-        colonne = column[6]
-        
+    if x<DIAMETRE_JETON:
+        colonne = 0
+    elif DIAMETRE_JETON<x<DIAMETRE_JETON*2:
+        colonne = 1
+    elif DIAMETRE_JETON*2<x<DIAMETRE_JETON*3:
+        colonne = 2
+    elif DIAMETRE_JETON*3<x<DIAMETRE_JETON*4:
+        colonne = 3
+    elif DIAMETRE_JETON*4<x<DIAMETRE_JETON*5:
+        colonne = 4
+    elif DIAMETRE_JETON*5<x<DIAMETRE_JETON*6:
+        colonne = 5
+    elif DIAMETRE_JETON*6<x<DIAMETRE_JETON*7:
+        colonne = 6
+
+    # Pas d'action si la colonne est plaine    
     if configuration[0][colonne] != 0:   
         None
+    # Chute du jeuton s'il y a encor de la place dans la colonne
     else:
         while configuration[ligne][colonne] != 0:
             ligne -= 1
@@ -102,44 +131,68 @@ def mouvement_jeton(event):
         elif joueur == 2:
             configuration[ligne][colonne] = 2
             joueur = 1
-        affichage_jeuton()
-        determination_du_gagnant()
         
-def determination_du_gagnant():
-    """Fonction qui détermine le gagnant en vérifiant si 4 jetons sont alignés"""
-    winner = False #variable qui permet de voir s'il y a un gagant
+        # Compte le nombre de jeuton dans la grille
+        compteur += 1
+        
+        # Mise à jour de l'affichage de la grille 
+        affichage_jeuton()
+        
+        # Vérification des allignement des jeutons
+        determination_du_gagnant()
+
+        
+def affichage_fin_partie(texte_fin_partie):
+    """
+    Fonction qui affiche le gagnant
+    """
     
-    #vérifie si 4 jetons sont alignés dans une colonne
+    # Affichage gagnant
+    label = tk.Label(racine, text = texte_fin_partie , font = "helvetica, 30")
+    label.grid(column = 0, row = 1, rowspan =2)
+
+    # Empêche de rajouter un pion
+    canvas.unbind('<Button>')
+
+
+def determination_du_gagnant():
+    """
+    Fonction qui détermine le gagnant en vérifiant si 4 jetons sont alignés.
+    """
+    global compteur
+    
+    # Variable qui determine la fin de la partie
+    partie_non_nulle = False 
+
+    # Vérifie si 4 jetons sont alignés dans une colonne
     for j in range(NOMBRE_COLONNE):
         for i in range (NOMBRE_LIGNE):
             if i+2 == NOMBRE_LIGNE-1:
                 break
             else:    
                 if configuration[i][j] == 1 and configuration[i+1][j] == 1 and configuration[i+2][j] ==1 and configuration[i+3][j] == 1:
-                    label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
-                    label.grid(column = 0, row = 1, rowspan =2)
-                    winner = True
+                    affichage_fin_partie("Vainqueur:\nJoueur 1")
+                    partie_non_nulle = True
+            
                 if configuration[i][j] == 2 and configuration[i+1][j] == 2 and configuration[i+2][j] ==2 and configuration[i+3][j] == 2:
-                    label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
-                    label.grid(column = 0, row = 1, rowspan =2)
-                    winner = True
+                    affichage_fin_partie("Vainqueur:\nJoueur 2")
+                    partie_non_nulle = True
     
-    #vérifie si 4 jetons sont alignés dans une ligne
+    # Vérifie si 4 jetons sont alignés dans une ligne
     for i in range(NOMBRE_LIGNE):
         for j in range (NOMBRE_COLONNE):
             if j+2 == NOMBRE_COLONNE-1:
                 break
             else:
                 if configuration[i][j]==1 and configuration[i][j+1]==1 and configuration[i][j+2]==1 and configuration[i][j+3]== 1:
-                    label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
-                    label.grid(column = 0, row = 1, rowspan =2)
-                    winner = True
+                    affichage_fin_partie("Vainqueur:\nJoueur 1")
+                    partie_non_nulle = True
+
                 if configuration[i][j]==2 and configuration[i][j+1]==2 and configuration[i][j+2]==2 and configuration[i][j+3]== 2:
-                    label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
-                    label.grid(column = 0, row = 1, rowspan =2)
-                    winner = True
+                    affichage_fin_partie("Vainqueur:\nJoueur 2")
+                    partie_non_nulle = True
     
-    #vérifie si 4 jetons sont alignés dans une diagonale en haut à gauche vers en bas à droite
+    # Vérifie si 4 jetons sont alignés dans une diagonale en haut à gauche vers en bas à droite
     for i in range(NOMBRE_LIGNE):
         if i+2 == NOMBRE_LIGNE-1:
             break
@@ -149,54 +202,52 @@ def determination_du_gagnant():
                     break
                 else:
                     if configuration[i][j]==1 and configuration[i+1][j+1]==1 and configuration[i+2][j+2]==1 and configuration[i+3][j+3]== 1:
-                        label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
-                        label.grid(column = 0, row = 1, rowspan =2)
-                        winner = True
+                        affichage_fin_partie("Vainqueur:\nJoueur 1")
+                        partie_non_nulle = True
+
                     if configuration[i][j]==2 and configuration[i+1][j+1]==2 and configuration[i+2][j+2]==2 and configuration[i+3][j+3]== 2:
-                        label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
-                        label.grid(column = 0, row = 1, rowspan =2)
-                        winner = True
+                        affichage_fin_partie("Vainqueur:\nJoueur 2")
+                        partie_non_nulle = True
     
-    #vérifie si 4 jetons sont alignés dans une diagonale en haut à droite vers en bas à gauche
+    # Vérifie si 4 jetons sont alignés dans une diagonale en haut à droite vers en bas à gauche
     for i in range(NOMBRE_LIGNE):
         if i+2 == NOMBRE_LIGNE-1:
             break
         else:
             for j in range (NOMBRE_COLONNE):
-                if -1-(j+2) == 0:
+                if -1-(j+2) == -7:
                     break
                 else:
                     if configuration[i][-1-(j)]==1 and configuration[i+1][-1-(j+1)]==1 and configuration[i+2][-1-(j+2)]==1 and configuration[i+3][-1-(j+3)]== 1:
-                        label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
-                        label.grid(column = 0, row = 1, rowspan =2)
-                        winner = True
+                        affichage_fin_partie("Vainqueur:\nJoueur 1")
+                        partie_non_nulle = True
+
                     if configuration[i][-1-(j)]==2 and configuration[i+1][-1-(j+1)]==2 and configuration[i+2][-1-(j+2)]==2 and configuration[i+3][-1-(j+3)]== 2:
-                        label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
-                        label.grid(column = 0, row = 1, rowspan =2)
-                        winner = True
-
-    #empêche de rajouter un pion quand il y a un gagnant                    
-    if winner == True:
-        canvas.unbind('<Button>')
-
-    #manche nulle
-    if 0 not in configuration and winner == False:
-        label = tk.Label(racine, text = "Manche nulle!", font = "helvetica, 30")
-        label.grid(column = 0, row = 1, rowspan =2)
-
-
+                        affichage_fin_partie("Vainqueur:\nJoueur 2")
+                        partie_non_nulle = True
+                      
+    # Vérifie si il y a match nul
+    if partie_non_nulle == True:
+        None    
+    
+    else:
+        # Vérifie si la grille est rempli
+        if compteur == NOMBRE_LIGNE*NOMBRE_COLONNE:
+            
+            # Affiche match nulle
+            affichage_fin_partie("Manche nulle")
 
 
 def sauvegarde():
     """
-    Fonction qui enregistre la configuration actuel dans un fichier
-     et le nom de ce fichier dans list_nom_sauvegarde.txt
+    Fonction qui enregistre la configuration actuel dans un fichier,
+     le nom de ce fichier dans le fichier list_nom_sauvegarde.txt,
+      et met à jour l'affichage graphique de la liste des fichier sauvegarder à charger.
     """
     global list_sauvegarde, list_fichier_charge
 
+    # Récupération du nom du fichier à sauvegarder
     nom_fichier = entré_nom_fichier_sauvegarde.get()
-    
-    list_sauvegarde.append(nom_fichier)
 
     # Ajout du nom du fichier à la liste des fichier sauvegarder dans le fichier "list_nom_sauvegarde.txt"
     fichier_list_sauvegarde = open("list_nom_sauvegarde.txt","a")
@@ -218,54 +269,71 @@ def sauvegarde():
         list_sauvegarde.append(ligne)
     fichier_list_sauvegarde.close
 
+    # Affichage graphique de la liste de chargement
     del(list_fichier_charge)
     list_fichier_charge = tk.Listbox(frame_charge, bd=0, activestyle='none', fg="white", bg="grey1")
     list_fichier_charge.grid(column=1,row=0)
     for i in list_sauvegarde:
         list_fichier_charge.insert('end', i)
 
+
 def charger():
     """
-    Fonction de chargement des configuration enregistrer
+    Fonction de chargement des configurations enregistrés.
     """
     global configuration
     
+    # Supression du saut à la ligne dans le nom du fichier sélectionner
     nom_fichier = list_fichier_charge.get(list_fichier_charge.curselection())
     nom_fichier = list(nom_fichier)
     del(nom_fichier[-1])
     nom_fichier = "".join(nom_fichier)
     
-    config = []
-
+    # Chargement de la configuration
+    configuration = []
     fichier_charger = open(nom_fichier+".txt","r")
     for ligne in fichier_charger:
-        config.append(list(ligne))
+        configuration.append(list(ligne))
     # Supression du saut à la ligne
-    for i in config:
+    for i in configuration:
         del(i[-1])
     # Convertion des élémentde la liste en entier
     for i in range(NOMBRE_LIGNE):
         for j in range(NOMBRE_COLONNE):
-            config[i][j]=int(config[i][j])   
+            configuration[i][j]=int(configuration[i][j])   
     fichier_charger.close
-
-    configuration = config
     
+    # Mise à jour de l'affichage
     affichage_jeuton()
 
-def demarrer():
-    configuration_initiale()
-    affichage_jeuton()
 
 def retour():
+    """
+    Fonction qui annule l'action précedente d'ajout de jeton
+    """
     global configuration, historique, joueur
+    
+    # replace la configuration précedente
     configuration = historique[-1]
+    
+    # suprime le dernier élément de l'historique
     del(historique[-1])
+    
+    # Redéfinie corectement le joueur qui doit jouer pour le prochain tour
     if joueur == 1:
         joueur = 2
     elif joueur == 2:
         joueur = 1
+
+    # Mise à jour de l'affichage
     affichage_jeuton()
+
+    # Compte le nombre de jeuton dans la grille
+    if compteur == 0:
+        None
+    else:
+        compteur -= 1
+
 
 ########## Affichage graphique
 
@@ -287,7 +355,7 @@ for i in list_sauvegarde:
 bouton_charger = tk.Button(frame_charge, text="charge", bg="grey1", fg="orange", command=lambda : charger())
 # widdet d'annulation
 bouton_retour = tk.Button(racine, text="annuler", bg="grey1", fg="orange", command = lambda : retour())
-bouton_demarrer = tk.Button(racine, text = "démarrer", bg="grey1", fg="orange", command = demarrer)
+bouton_demarrer = tk.Button(racine, text = "démarrer une nouvelle partie", bg="grey1", fg="orange", command = demarrer)
 
 ### Placement des widgets
 canvas.grid(column=0,row=0, rowspan=4)
