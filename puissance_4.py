@@ -92,18 +92,20 @@ def mouvement_jeton(event):
     if 600<x<700:
         colonne = column[6]
         
-    while configuration[ligne][colonne] != 0:
-        ligne -= 1
-    if joueur == 1:
-        configuration[ligne][colonne] = 1
-        joueur = 2
-    elif joueur == 2:
-        configuration[ligne][colonne] = 2
-        joueur = 1
-    
-    affichage_jeuton()
-    determination_du_gagnant()
-    
+   if configuration[0][colonne] != 0:   
+        None
+    else:
+        while configuration[ligne][colonne] != 0:
+            ligne -= 1
+        if joueur == 1:
+            configuration[ligne][colonne] = 1
+            joueur = 2
+        elif joueur == 2:
+            configuration[ligne][colonne] = 2
+            joueur = 1
+        affichage_jeuton()
+        determination_du_gagnant()
+        
 def determination_du_gagnant():
     """Fonction qui détermine le gagnant en vérifiant si 4 jetons sont alignés"""
     winner = False #variable qui permet de voir s'il y a un gagant
@@ -123,7 +125,7 @@ def determination_du_gagnant():
     #vérifie si 4 jetons sont alignés dans une ligne
     for i in range(NOMBRE_LIGNE):
         for j in range (NOMBRE_COLONNE):
-            if configuration[i][-j]==1 and configuration[i][-(j+1)]==1 and configuration[i][-(j+1)]==1 and configuration[i][-(j+3)]== 1:
+            if configuration[i][-j]==1 and configuration[i][-(j+1)]==1 and configuration[i][-(j+2)]==1 and configuration[i][-(j+3)]== 1:
                 label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
                 label.grid(column = 0, row = 2)
                 winner = True
@@ -133,9 +135,9 @@ def determination_du_gagnant():
                 winner = True
 
     #match nul
-    if (0 not in configuration) and (winner == False):
+    """if (0 not in configuration) and (winner == False):
         label = tk.Label(racine, text = "Manche nulle!", font = "helvetica, 30")
-        label.grid(column = 0, row = 2) ###y a un problème à chaque clique ça affiche manche nulle????
+        label.grid(column = 0, row = 2) ###y a un problème à chaque clique ça affiche manche nulle????"""
 
 def colonne_bloquee(): #la fonction ne marche pas
     global column
@@ -232,40 +234,38 @@ canvas = tk.Canvas(racine, width=DIAMETRE_JETON*NOMBRE_COLONNE, height=DIAMETRE_
 
 ### Création des wigdests
 
-# Wijet de sauvegarde
+# Widget de sauvegarde
 frame_sauvegarde = tk.LabelFrame(racine,text="nommez votre fichier à sauvegarder", bd=0, fg="grey", bg="grey1")
 entré_nom_fichier_sauvegarde = tk.Entry(frame_sauvegarde, fg="white", bg="grey1")
 bouton_sauvegarder = tk.Button(frame_sauvegarde, text="sauvegarde", bg="grey1", fg="orange", command=lambda : sauvegarde())
-# Widjet de chargement
+# Widget de chargement
 frame_charge = tk.LabelFrame(racine,text="Choisisser une sauvegarde", bd=0, fg="grey", bg="grey1")
 list_fichier_charge = tk.Listbox(frame_charge, bd=0, activestyle='none', fg="white", bg="grey1")
 for i in list_sauvegarde:
     list_fichier_charge.insert('end', i)
 bouton_charger = tk.Button(frame_charge, text="charge", bg="grey1", fg="orange", command=lambda : charger())
-# widjet d'annulation
+# widdet d'annulation
 bouton_retour = tk.Button(racine, text="annuler", bg="grey1", fg="orange", command = lambda : retour())
 bouton_demarrer = tk.Button(racine, text = "démarrer", bg="grey1", fg="orange", command = demarrer)
 
 ### Placement des widgets
 canvas.grid(column=0,row=0, rowspan=4)
-# Widjets de sauvegarde
+# Widdets de sauvegarde
 frame_sauvegarde.grid(column=1, row=0)
 entré_nom_fichier_sauvegarde.grid(column=0, row=0)
 bouton_sauvegarder.grid(column=1, row=0)
-# widjets de chargement
+# widdets de chargement
 frame_charge.grid(column=1, row=1)
 list_fichier_charge.grid(column=1,row=0)
 bouton_charger.grid(column=1, row=1)
-# widjet d'annulation
+# widget d'annulation
 bouton_retour.grid(column=1, row=3)
 bouton_demarrer.grid(column=1, row = 2)
 
 #liaison d'événements 
 canvas.bind('<Button>', mouvement_jeton )
 
-# fonctions appliquées avant le démarrage de la fenêtre graphique
-configuration_initiale()
-affichage_jeuton()
+
 
 # Lancement de l'interface graphique
 racine.mainloop()
