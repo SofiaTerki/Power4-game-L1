@@ -24,7 +24,7 @@ jeuton = []
 joueur = None
 list_sauvegarde = []
 historique = []
-compteur = 0
+label = None
 
 
 # création d'un fichier déstiné à contenir le nom des fichier sauvegarder si ce premier n'existe pas
@@ -42,16 +42,25 @@ def demarrer():
     """
     Fonction qui initialise tous les parametre éssenciel pour le début d'une nouvelle partie.
     """
-    global joueur
-
+    global joueur, label, compteur
+    
+    # Supprime les label si il y en a
+    if label == None:
+        None
+    else:
+        label.grid_forget()
+    
     # détermination du joueur qui commence en premier
     joueur = random.randint(1,2)
-    
+
     # Création d'une grille vide
     configuration_initiale()
     
     # Affichage de la grille
     affichage_jeuton()
+
+    #liaison d'événements 
+    canvas.bind('<Button>', mouvement_jeton )
 
 
 def configuration_initiale():
@@ -95,7 +104,7 @@ def mouvement_jeton(event):
     Fonction qui permet de faire tomber le jeton dans la
     grille jusqu'à toucher le fond ou un autre jeton.
     """
-    global joueur, configuration, historique, compteur
+    global joueur, configuration, historique
     
     # Sauvegarde de de la configration afin de faire un retour vers elle si besoin
     historique.append(copy.deepcopy(configuration))
@@ -132,20 +141,30 @@ def mouvement_jeton(event):
             configuration[ligne][colonne] = 2
             joueur = 1
         
-        # Compte le nombre de jeuton dans la grille
-        compteur += 1
-        
         # Mise à jour de l'affichage de la grille 
         affichage_jeuton()
         
         # Vérification des allignement des jeutons
         determination_du_gagnant()
 
-        
+
+def compte_jeton():
+    """
+    Fonction qui compte le nombre de jeton dans la grille
+    """
+    compteur = 0
+    for j in range(NOMBRE_COLONNE):
+        for i in range (NOMBRE_LIGNE):
+            if configuration[i][j] != 0:
+                compteur += 1
+    return compteur
+
+
 def affichage_fin_partie(texte_fin_partie):
     """
     Fonction qui affiche le gagnant
     """
+    global label
     
     # Affichage gagnant
     label = tk.Label(racine, text = texte_fin_partie , font = "helvetica, 30")
@@ -232,8 +251,7 @@ def determination_du_gagnant():
     
     else:
         # Vérifie si la grille est rempli
-        if compteur == NOMBRE_LIGNE*NOMBRE_COLONNE:
-            
+        if compte_jeton() == NOMBRE_LIGNE*NOMBRE_COLONNE:
             # Affiche match nulle
             affichage_fin_partie("Manche nulle")
 
@@ -281,7 +299,7 @@ def charger():
     """
     Fonction de chargement des configurations enregistrés.
     """
-    global configuration
+    global configuration, joueur, label, compteur
     
     # Supression du saut à la ligne dans le nom du fichier sélectionner
     nom_fichier = list_fichier_charge.get(list_fichier_charge.curselection())
@@ -306,6 +324,18 @@ def charger():
     # Mise à jour de l'affichage
     affichage_jeuton()
 
+    # Supprime les label si il y en a
+    if label == None:
+        None
+    else:
+        label.grid_forget()
+    
+    # détermination du joueur qui commence en premier
+    joueur = random.randint(1,2)
+
+    #liaison d'événements 
+    canvas.bind('<Button>', mouvement_jeton )
+
 
 def retour():
     """
@@ -325,20 +355,25 @@ def retour():
     elif joueur == 2:
         joueur = 1
 
+    # Supprime les label si il y en a
+    if label == None:
+        None
+    else:
+        label.grid_forget()
+
+    #liaison d'événements 
+    canvas.bind('<Button>', mouvement_jeton )
+
     # Mise à jour de l'affichage
     affichage_jeuton()
 
-    # Compte le nombre de jeuton dans la grille
-    if compteur == 0:
-        None
-    else:
-        compteur -= 1
 
 
 ########## Affichage graphique
 
 racine = tk.Tk()
 racine.config(bg="grey1")
+racine.title("Puissance 4")
 canvas = tk.Canvas(racine, width=DIAMETRE_JETON*NOMBRE_COLONNE, height=DIAMETRE_JETON*NOMBRE_LIGNE, bg="indigo")
 
 ### Création des wigdests
@@ -370,11 +405,6 @@ bouton_charger.grid(column=1, row=1)
 # widget d'annulation
 bouton_retour.grid(column=1, row=3)
 bouton_demarrer.grid(column=1, row = 2)
-
-#liaison d'événements 
-canvas.bind('<Button>', mouvement_jeton )
-
-
 
 # Lancement de l'interface graphique
 racine.mainloop()
