@@ -205,9 +205,13 @@ def demarrer():
     affichage_jeuton()
 
 def retour():
-    global configuration, historique
+    global configuration, historique, joueur
     configuration = historique[-1]
     del(historique[-1])
+    if joueur == 1:
+        joueur = 2
+    elif joueur == 2:
+        joueur = 1
     affichage_jeuton()
 
 ########## Affichage graphique
