@@ -149,7 +149,7 @@ def sauvegarde():
     Fonction qui enregistre la configuration actuel dans un fichier
      et le nom de ce fichier dans list_nom_sauvegarde.txt
     """
-    global list_sauvegarde
+    global list_sauvegarde, list_fichier_charge
 
     nom_fichier = entré_nom_fichier_sauvegarde.get()
     
@@ -169,7 +169,17 @@ def sauvegarde():
     fichier_sauvegarde.close
     
     # Ajout du fichier à la liste de chargement
-    list_fichier_charge.insert('end', nom_fichier)
+    list_sauvegarde = []
+    fichier_list_sauvegarde = open("list_nom_sauvegarde.txt","r")
+    for ligne in fichier_list_sauvegarde:
+        list_sauvegarde.append(ligne)
+    fichier_list_sauvegarde.close
+
+    del(list_fichier_charge)
+    list_fichier_charge = tk.Listbox(frame_charge, bd=0, activestyle='none', fg="white", bg="grey1")
+    list_fichier_charge.grid(column=1,row=0)
+    for i in list_sauvegarde:
+        list_fichier_charge.insert('end', i)
 
 def charger():
     """
