@@ -92,7 +92,7 @@ def mouvement_jeton(event):
     if 600<x<700:
         colonne = column[6]
         
-   if configuration[0][colonne] != 0:   
+    if configuration[0][colonne] != 0:   
         None
     else:
         while configuration[ligne][colonne] != 0:
