@@ -111,7 +111,7 @@ def determination_du_gagnant():
     winner = False #variable qui permet de voir s'il y a un gagant
     #vérifie si 4 jetons sont alignés dans une colonne
     for j in range(NOMBRE_COLONNE):
-        for i in range (NOMBRE_LIGNE):
+        for i in range (5):
             if configuration[-i][j]==1 and configuration[-(i+1)][j] == 1 and configuration[-(i+2)][j]==1 and configuration[-(i+3)][j]== 1:
                 #print("Joueur 1 is the WINNER!")
                 label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
@@ -124,7 +124,7 @@ def determination_du_gagnant():
 
     #vérifie si 4 jetons sont alignés dans une ligne
     for i in range(NOMBRE_LIGNE):
-        for j in range (NOMBRE_COLONNE):
+        for j in range (4):
             if configuration[i][-j]==1 and configuration[i][-(j+1)]==1 and configuration[i][-(j+2)]==1 and configuration[i][-(j+3)]== 1:
                 label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
                 label.grid(column = 0, row = 2)
