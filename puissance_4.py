@@ -117,11 +117,11 @@ def determination_du_gagnant():
             else:    
                 if configuration[i][j] == 1 and configuration[i+1][j] == 1 and configuration[i+2][j] ==1 and configuration[i+3][j] == 1:
                     label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
-                    label.grid(column = 0, row = 2)
+                    label.grid(column = 0, row = 1, rowspan =2)
                     winner = True
                 if configuration[i][j] == 2 and configuration[i+1][j] == 2 and configuration[i+2][j] ==2 and configuration[i+3][j] == 2:
                     label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
-                    label.grid(column = 0, row = 2)
+                    label.grid(column = 0, row = 1, rowspan =2)
                     winner = True
     
     #vérifie si 4 jetons sont alignés dans une ligne
@@ -132,11 +132,11 @@ def determination_du_gagnant():
             else:
                 if configuration[i][j]==1 and configuration[i][j+1]==1 and configuration[i][j+2]==1 and configuration[i][j+3]== 1:
                     label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
-                    label.grid(column = 0, row = 2)
+                    label.grid(column = 0, row = 1, rowspan =2)
                     winner = True
                 if configuration[i][j]==2 and configuration[i][j+1]==2 and configuration[i][j+2]==2 and configuration[i][j+3]== 2:
                     label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
-                    label.grid(column = 0, row = 2)
+                    label.grid(column = 0, row = 1, rowspan =2)
                     winner = True
     
     #vérifie si 4 jetons sont alignés dans une diagonale en haut à gauche vers en bas à droite
@@ -150,11 +150,11 @@ def determination_du_gagnant():
                 else:
                     if configuration[i][j]==1 and configuration[i+1][j+1]==1 and configuration[i+2][j+2]==1 and configuration[i+3][j+3]== 1:
                         label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
-                        label.grid(column = 0, row = 2)
+                        label.grid(column = 0, row = 1, rowspan =2)
                         winner = True
                     if configuration[i][j]==2 and configuration[i+1][j+1]==2 and configuration[i+2][j+2]==2 and configuration[i+3][j+3]== 2:
                         label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
-                        label.grid(column = 0, row = 2)
+                        label.grid(column = 0, row = 1, rowspan =2)
                         winner = True
     
     #vérifie si 4 jetons sont alignés dans une diagonale en haut à droite vers en bas à gauche
@@ -168,12 +168,23 @@ def determination_du_gagnant():
                 else:
                     if configuration[i][-1-(j)]==1 and configuration[i+1][-1-(j+1)]==1 and configuration[i+2][-1-(j+2)]==1 and configuration[i+3][-1-(j+3)]== 1:
                         label = tk.Label(racine, text = "Joueur 1 is the WINNER!", font = "helvetica, 30")
-                        label.grid(column = 0, row = 2)
+                        label.grid(column = 0, row = 1, rowspan =2)
                         winner = True
                     if configuration[i][-1-(j)]==2 and configuration[i+1][-1-(j+1)]==2 and configuration[i+2][-1-(j+2)]==2 and configuration[i+3][-1-(j+3)]== 2:
                         label = tk.Label(racine, text = "Joueur 2 is the WINNER!", font = "helvetica, 30")
-                        label.grid(column = 0, row = 2)
+                        label.grid(column = 0, row = 1, rowspan =2)
                         winner = True
+
+    #empêche de rajouter un pion quand il y a un gagnant                    
+    if winner == True:
+        canvas.unbind('<Button>')
+
+    #manche nulle
+    if 0 not in configuration and winner == False:
+        label = tk.Label(racine, text = "Manche nulle!", font = "helvetica, 30")
+        label.grid(column = 0, row = 1, rowspan =2)
+
+
 
 
 def sauvegarde():
