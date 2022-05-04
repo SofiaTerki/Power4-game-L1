@@ -9,7 +9,6 @@
 
 ########## Librairies
 import tkinter as tk
-import random
 import copy
 
 ########## Constantes
