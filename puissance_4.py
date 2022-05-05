@@ -7,7 +7,7 @@
 # https://github.com/uvsq22005047/Projet_puissance_4.git
 #########################################################
 
-########## Probleme non résolue:
+########## Probleme non résolue
 
 """
 Le label d'affichage du gagnant ou du match nul reste quelque fois
