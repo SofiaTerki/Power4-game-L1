@@ -7,6 +7,13 @@
 # https://github.com/uvsq22005047/Projet_puissance_4.git
 #########################################################
 
+########## Probleme non résolue:
+
+"""
+Le label d'affichage du gagnant ou du match nul reste quelque fois
+ devant la grille sans qu'on sache pourquoi alors qu'il devrait disparaitre.
+"""
+
 ########## Librairies
 import tkinter as tk
 import copy
