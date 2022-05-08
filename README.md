@@ -20,8 +20,8 @@ C’est un jeu à deux joueurs qui se déroule sur un tableau à 7x6 cases. Le p
 
 
 **Fonctionnement du jeu**
-- Un joueur clique sur le bouton "démarrer une nouvelle partie" pour démarrer le jeu.
+- Un joueur clique sur le bouton ***"démarrer une nouvelle partie"*** pour démarrer le jeu.
 - Chaque joueur clique tour à tour pour placer son jeton.
-- Un bouton "annuler" permet au joueur d'annuler son coup.
-- Les joueurs peuvent sauvegarder leur partie en donnat un nom au fichier et en cliquant sur le boutant "sauvegarder".
-- Les joueurs peuvent charger une ancienne partie en sélectionnant le nom de la partie et en cliquant sur le bouton "charger".
+- Un bouton ***"annuler"*** permet au joueur d'annuler son coup.
+- Les joueurs peuvent sauvegarder leur partie en donnat un nom au fichier et en cliquant sur le boutant ***"sauvegarder"***.
+- Les joueurs peuvent charger une ancienne partie en sélectionnant le nom de la partie et en cliquant sur le bouton ***"charger"***.
