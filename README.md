@@ -1,12 +1,13 @@
 # Projet_puissance_4
 
-**Chargé de TD :** "\n"Vincent CAMION
+**Chargé de TD :**  
+Vincent CAMION
 
-**Groupe LDDBI 6**
-Clémence GERMETTE
-Adam JACCOU
-Erwan MAIRE
-Sofia TERKI
+**Groupe LDDBI 6**  
+Clémence GERMETTE  
+Adam JACCOU  
+Erwan MAIRE  
+Sofia TERKI  
 
 **Lien du dépôt github:**
 https://github.com/uvsq22005047/Projet_puissance_4.git
