@@ -1,6 +1,6 @@
 # Projet_puissance_4
 
-**Chargé de TD :** \n Vincent CAMION
+**Chargé de TD :** "\n"Vincent CAMION
 
 **Groupe LDDBI 6**
 Clémence GERMETTE
